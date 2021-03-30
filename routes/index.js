@@ -12,4 +12,14 @@ router.get('/helloworld', function(req, res, next) {
   res.render('helloworld', { title: 'Hello World!' });
 });
 
+/* GET race list page */
+router.get('/racelist', async function(req, res) {
+    const rows = await db.query(`SELECT * FROM race;`, []);
+    console.log(rows);
+    res.render('racelist', {
+      "racelist" : rows,
+      "title" : "Races"
+    });
+});
+
 module.exports = router;
