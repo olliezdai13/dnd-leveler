@@ -56,7 +56,6 @@
  
  CREATE TABLE classSavingThrow 
  (
-	id INT PRIMARY KEY AUTO_INCREMENT,
     stat ENUM('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') NOT NULL,
     class_name VARCHAR(255) NOT NULL,
     FOREIGN KEY (class_name) REFERENCES class(class_name) ON UPDATE RESTRICT ON DELETE RESTRICT
@@ -466,3 +465,25 @@ INSERT INTO classtoskill (class_name, skill_name) VALUES
     ("Wizard", "Insight"),
     ("Wizard", "History"),
     ("Wizard", "Arcana");
+    
+INSERT INTO classsavingthrow (class_name, stat) VALUES
+	("Wizard", "Wisdom"),
+	("Wizard", "Intelligence"),
+	("Warlock", "Wisdom"),
+	("Warlock", "Charisma"),
+	("Sorcerer", "Charisma"),
+	("Sorcerer", "Constitution"),
+	("Rogue", "Intelligence"),
+	("Rogue", "Dexterity"),
+	("Ranger", "Wisdom"),
+	("Ranger", "Dexterity"),
+	("Fighter", "Constitution"),
+	("Fighter", "Strength"),
+	("Druid", "Wisdom"),
+	("Druid", "Intelligence"),
+	("Cleric", "Charisma"),
+	("Cleric", "Wisdom"),
+	("Bard", "Charisma"),
+	("Bard", "Dexterity"),
+	("Barbarian", "Constitution"),
+	("Barbarian", "Strength");
