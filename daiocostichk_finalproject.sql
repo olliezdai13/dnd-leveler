@@ -80,7 +80,7 @@
  
  CREATE TABLE ddCharacter 
  (
-	character_id INT PRIMARY KEY,
+	character_id INT PRIMARY KEY AUTO_INCREMENT,
     character_name VARCHAR(255) NOT NULL,
     race_name VARCHAR(255) NOT NULL,
     class_name VARCHAR(255) NOT NULL,
@@ -102,7 +102,7 @@
     weight INT NOT NULL,
     eyes ENUM('Blue', 'Brown', 'Green', 'Yellow', 'Red', 'Black'),
     skin ENUM('Light', 'Blue', 'Brown', 'Green', 'Yellow', 'Red', 'Black'),
-    portraitPath VARCHAR(255) NOT NULL,
+    portraitPath VARCHAR(255),
     FOREIGN KEY (race_name) REFERENCES race(race_name) ON UPDATE RESTRICT ON DELETE RESTRICT,
     FOREIGN KEY (class_name) REFERENCES class(class_name) ON UPDATE RESTRICT ON DELETE RESTRICT,
     FOREIGN KEY (bg_name) REFERENCES background(bg_name) ON UPDATE RESTRICT ON DELETE RESTRICT,
@@ -487,3 +487,8 @@ INSERT INTO classsavingthrow (class_name, stat) VALUES
 	("Bard", "Dexterity"),
 	("Barbarian", "Constitution"),
 	("Barbarian", "Strength");
+    
+    
+-- Sample character (assuming height in CM and weight in KG)
+INSERT INTO ddcharacter (character_name, race_name, class_name, bg_name, level, str_score, dex_score, con_score, int_score, wis_score, cha_score, alignment, proficiency_bonus, deity_id, sex, height, weight, eyes, skin, portraitPath) VALUES
+						("Leglass", "Half-Elf", "Ranger", "Folk Hero", 1, 10, 15, 10, 11, 15, 10, "Neutral good", 2, NULL, "Female", 160, 54, "Blue", "Light", NULL);
