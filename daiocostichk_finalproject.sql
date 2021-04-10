@@ -115,7 +115,7 @@
     character_id INT NOT NULL,
     stat ENUM('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') NOT NULL,
     amount INT NOT NULL,
-    origin ENUM ('Other', 'Race', 'Ability Score Increase') NOT NULL,
+    origin ENUM ('Other', 'Race', 'ASI4', 'ASI8', 'ASI12', 'ASI16', 'ASI19') NOT NULL,
     FOREIGN KEY (character_id) REFERENCES ddCharacter(character_id) ON UPDATE RESTRICT ON DELETE RESTRICT
  );
  
@@ -491,8 +491,15 @@ INSERT INTO statchange (character_id, stat, amount, origin) VALUES
     (1, "Wisdom", 1, "Race");
                         
 -- Procedures:
-DROP PROCEDURE IF EXISTS get_race_stats; -- Fetches a race's stat change options
-DROP PROCEDURE IF EXISTS calc_character_stats; -- Outputs a character's final stat block, accounting for stat changes
+ -- Fetches a race's stat change options
+DROP PROCEDURE IF EXISTS get_race_stats;
+
+ -- Outputs a character's final stat block, accounting for stat changes
+DROP PROCEDURE IF EXISTS calc_character_stats;
+
+ -- Levels up the given character
+ -- Takes two stats for the ability score increase (only applies at the relevant levels). Input can be NULL but will error if the level-up expects an ability score increase
+DROP PROCEDURE IF EXISTS level_up;
 
 DELIMITER $$
 CREATE PROCEDURE get_race_stats(character_id INT)
@@ -518,7 +525,48 @@ BEGIN
     SET cha_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Charisma");
     
     SELECT str_score + str_change AS str, dex_score + dex_change AS dex, con_score + con_change AS con, wis_score + wis_change AS wis, int_score + int_change AS `int`, cha_score + cha_change AS cha,
-		str_score AS str_base, dex_score AS dex_base, con_score AS con_base, wis_score AS wis_base, int_score AS int_base, cha_score AS cha_base
+		str_score AS str_base, dex_score AS dex_base, con_score AS con_base, wis_score AS wis_base, int_score AS int_base, cha_score AS cha_base, level, proficiency_bonus
 		FROM ddcharacter dd WHERE dd.character_id = character_id;
 END $$
 
+DELIMITER $$
+CREATE PROCEDURE level_up(	character_id INT, 
+							score_increase_stat_1 ENUM('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'), 
+                            score_increase_stat_2 ENUM('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'))
+BEGIN 
+	DECLARE lvl INT;
+    DECLARE prof INT;
+    DECLARE new_lvl INT;
+    SET lvl = (SELECT level FROM ddcharacter dd WHERE dd.character_id = character_id);
+    SET new_lvl = lvl + 1;
+    
+    IF (lvl <= 20) THEN SET prof = 6; END IF;
+    IF (lvl <= 16) THEN SET prof = 5; END IF;
+    IF (lvl <= 12) THEN SET prof = 4; END IF;
+    IF (lvl <= 8) THEN SET prof = 3; END IF;
+    IF (lvl <= 4) THEN SET prof = 2; END IF;
+    
+    -- if level 4, 8, 12, 16, or 19, do an ability score increase
+    IF ((new_lvl = 4 OR new_lvl = 8 OR new_lvl = 12 OR new_lvl = 16 OR new_lvl = 19)
+		AND (score_increase_stat_1 IS NULL AND score_increase_stat_2 IS NULL)) THEN
+			SELECT "ERROR: To level up, must specify one or two ability scores to increase." AS message;
+	ELSE
+		IF (new_lvl = 4 OR new_lvl = 8 OR new_lvl = 12 OR new_lvl = 16 OR new_lvl = 19) THEN
+			IF (score_increase_stat_1 IS NOT NULL AND score_increase_stat_2 IS NULL) THEN
+				-- if only 1 stat specified, increase it by 2
+				INSERT INTO statchange (character_id, stat, amount, origin) VALUES
+					(character_id, score_increase_stat_1, 2, CONCAT("ASI", new_lvl));
+			ELSEIF (score_increase_stat_1 IS NOT NULL AND score_increase_stat_2 IS NOT NULL) THEN
+				-- if 2 stats specified, increase them by 1
+				INSERT INTO statchange (character_id, stat, amount, origin) VALUES
+					(character_id, score_increase_stat_1, 1, CONCAT("ASI", new_lvl)),
+					(character_id, score_increase_stat_2, 1, CONCAT("ASI", new_lvl));
+			END IF;
+		END IF;
+		UPDATE ddcharacter dd SET level = new_lvl, proficiency_bonus = prof WHERE dd.character_id = character_id;
+	END IF;
+END $$
+
+
+CALL level_up(1, "Charisma", NULL);
+CALL calc_character_stats(1);
