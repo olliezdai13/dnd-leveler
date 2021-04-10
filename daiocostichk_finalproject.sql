@@ -114,7 +114,8 @@
 	id INT PRIMARY KEY AUTO_INCREMENT,
     character_id INT NOT NULL,
     stat ENUM('Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma') NOT NULL,
-    origin VARCHAR(255) NOT NULL,
+    amount INT NOT NULL,
+    origin ENUM ('Other', 'Race', 'Ability Score Increase') NOT NULL,
     FOREIGN KEY (character_id) REFERENCES ddCharacter(character_id) ON UPDATE RESTRICT ON DELETE RESTRICT
  );
  
@@ -142,15 +143,6 @@
     PRIMARY KEY (class_name, skill_name),
     FOREIGN KEY (class_name) REFERENCES class(class_name) ON UPDATE RESTRICT ON DELETE RESTRICT,
     FOREIGN KEY (skill_name) REFERENCES skill(skill_name) ON UPDATE RESTRICT ON DELETE RESTRICT
- );
- 
- CREATE TABLE characterToStatChange 
- (
-	character_id INT NOT NULL,
-    statChange_id INT NOT NULL,
-    PRIMARY KEY (character_id, statChange_id),
-    FOREIGN KEY (character_id) REFERENCES ddCharacter(character_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (statChange_id) REFERENCES statChange(id) ON UPDATE RESTRICT ON DELETE RESTRICT
  );
  
  CREATE TABLE backgroundToSkill 
@@ -490,5 +482,43 @@ INSERT INTO classsavingthrow (class_name, stat) VALUES
     
     
 -- Sample character (assuming height in CM and weight in KG)
-INSERT INTO ddcharacter (character_name, race_name, class_name, bg_name, level, str_score, dex_score, con_score, int_score, wis_score, cha_score, alignment, proficiency_bonus, deity_id, sex, height, weight, eyes, skin, portraitPath) VALUES
-						("Leglass", "Half-Elf", "Ranger", "Folk Hero", 1, 10, 15, 10, 11, 15, 10, "Neutral good", 2, NULL, "Female", 160, 54, "Blue", "Light", NULL);
+INSERT INTO ddcharacter (character_id, character_name, race_name, class_name, bg_name, level, str_score, dex_score, con_score, int_score, wis_score, cha_score, alignment, proficiency_bonus, deity_id, sex, height, weight, eyes, skin, portraitPath) VALUES
+						(1, "Leglass", "Half-Elf", "Ranger", "Folk Hero", 1, 10, 15, 10, 11, 15, 10, "Neutral good", 2, NULL, "Female", 160, 54, "Blue", "Light", NULL);
+                        
+INSERT INTO statchange (character_id, stat, amount, origin) VALUES
+	(1, "Charisma", 2, "Race"),
+    (1, "Dexterity", 1, "Race"),
+    (1, "Wisdom", 1, "Race");
+                        
+-- Procedures:
+DROP PROCEDURE IF EXISTS get_race_stats; -- Fetches a race's stat change options
+DROP PROCEDURE IF EXISTS calc_character_stats; -- Outputs a character's final stat block, accounting for stat changes
+
+DELIMITER $$
+CREATE PROCEDURE get_race_stats(character_id INT)
+BEGIN
+    SELECT stat, amount, r.race_name, character_name FROM racialstatchange r JOIN ddcharacter d ON r.race_name = d.race_name WHERE d.character_id = character_id;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE calc_character_stats(character_id INT)
+BEGIN
+    DECLARE str_change INT;
+    DECLARE dex_change INT;
+    DECLARE con_change INT;
+    DECLARE wis_change INT;
+    DECLARE int_change INT;
+    DECLARE cha_change INT;
+    
+    SET str_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Strength");
+    SET dex_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Dexterity");
+    SET con_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Constitution");
+    SET wis_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Wisdom");
+    SET int_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Intelligence");
+    SET cha_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Charisma");
+    
+    SELECT str_score + str_change AS str, dex_score + dex_change AS dex, con_score + con_change AS con, wis_score + wis_change AS wis, int_score + int_change AS `int`, cha_score + cha_change AS cha,
+		str_score AS str_base, dex_score AS dex_base, con_score AS con_base, wis_score AS wis_base, int_score AS int_base, cha_score AS cha_base
+		FROM ddcharacter dd WHERE dd.character_id = character_id;
+END $$
+
