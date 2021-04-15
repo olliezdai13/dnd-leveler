@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <h2>Select a character to edit</h2>
+    <ul>
+      <%
+      var list = '';
+      for (c of characterlist) {
+        var path = `../character/${c.character_id}`;
+        list += `<li><a href=${path}>${c.character_name}</a>, ${c.alignment}, Level ${c.level} ${c.class_name} </li>`;
+      } 
+      %>
+    <%- list %>
+    </ul>
+  </body>
+</html>

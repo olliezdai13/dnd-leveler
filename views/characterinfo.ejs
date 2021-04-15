@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <% var link = `/character/${character.character_id}/edit`; %>
+    <h1><%= title %> <a href=<%= link %>>(edit)</a></h1>
+    <p><b>Race:</b> <%- character.race_name %></p>
+    <p><b>Class:</b> <%- character.class_name %></p>
+    <p><b>Level:</b> <%- character.level %></p>
+    <p><b>Background:</b> <%- character.bg_name %></p>
+    <p><b>Alignment:</b> <%- character.alignment %></p>
+
+    <h2>Attributes</h2>
+    <p><b>Strength:</b> <%- stats.str %> (<%- Math.floor((parseInt(stats.str) - 10) / 2)  %>)</p>
+    <p><b>Dexterity:</b> <%- stats.dex %> (<%- Math.floor((parseInt(stats.dex) - 10) / 2)  %>)</p>
+    <p><b>Constitution:</b> <%- stats.con %> (<%- Math.floor((parseInt(stats.con) - 10) / 2)  %>)</p>
+    <p><b>Intelligence:</b> <%- stats.int %> (<%- Math.floor((parseInt(stats.int) - 10) / 2)  %>)</p>
+    <p><b>Wisdom:</b> <%- stats.wis %> (<%- Math.floor((parseInt(stats.wis) - 10) / 2)  %>)</p>
+    <p><b>Charisma:</b> <%- stats.cha %> (<%- Math.floor((parseInt(stats.cha) - 10) / 2)  %>)</p>
+
+    <h2>Saving Throws</h2>
+    <p>TODO (query saving throw proficiencies)</p>
+    <p>Example: Strength saving throw = stats.str + stats.proficiency_bonus (if proficient in str)</p>
+
+    <h2>Skills</h2>
+    <p>TODO (query skill proficiencies)</p>
+    <p>Example: Athletics skill = stats.str + stats.proficiency_bonus (if proficient in athletics)</p>
+
+    <h2>Other Stats</h2>
+    <p><b>Speed:</b> <%- character.speed %></p>
+    <p><b>Size:</b> <%- character.size %></p>
+    <p><b>Initiative:</b> <%- Math.floor((parseInt(stats.dex) - 10) / 2) %></p>
+    
+  </body>
+</html>
