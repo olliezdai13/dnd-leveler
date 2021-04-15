@@ -45,12 +45,18 @@ router.get('/character/:cid/edit', async function(req, res) {
 
 /* GET race list page */
 router.get('/racelist', async function(req, res) {
-    const rows = await db.query(`SELECT * FROM race;`, []);
-    console.log(rows);
-    res.render('racelist', {
-      "racelist" : rows,
-      "title" : "Races"
-    });
+  const rows = await db.query(`SELECT * FROM race;`, []);
+  console.log(rows);
+  res.render('racelist', {
+    "racelist" : rows,
+    "title" : "Races"
+  });
+});
+
+router.post('/testform', async function(req, res) {
+  console.log("Processing POST /testform");
+  console.log(req.body.field1);
+  res.redirect('/');
 });
 
 module.exports = router;
