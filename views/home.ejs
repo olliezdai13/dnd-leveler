@@ -14,7 +14,37 @@
         var path = `../character/${c.character_id}`;
         var button = '';
         if (20 > c.level) {
-          button += `<button type="button">Level Up</button>`
+          if (c.level === 3 || c.level === 7 || c.level === 11 || c.level === 15 || c.level === 18)
+          {
+            button += 
+            `<div id=${c.character_id} style="display: inline-block;">
+              <form method="post" action="/levelup" novalidate>
+                <select name="attribute1">
+                  <option value="Strength">Strength</option>
+                  <option value="Dexterity">Dexterity</option>
+                  <option value="Constitution">Constitution</option>
+                  <option value="Intelligence">Intelligence</option>
+                  <option value="Wisdom">Wisdom</option>
+                  <option value="Charisma">Charisma</option>
+                </select>
+                <select name="attribute2">
+                  <option value="Strength">Strength</option>
+                  <option value="Dexterity">Dexterity</option>
+                  <option value="Constitution">Constitution</option>
+                  <option value="Intelligence">Intelligence</option>
+                  <option value="Wisdom">Wisdom</option>
+                  <option value="Charisma">Charisma</option>
+                </select>
+                <input type="submit" value="Level Up">
+                <input type="hidden" name="cid" value=${c.character_id}>
+              </form>
+            </div>`;
+          } else {
+            button += `<form method="post" action="/levelup" style="display: inline-block;" novalidate>
+              <input type="submit" value="Level Up">
+              <input type="hidden" name="cid" value=${c.character_id}>
+            </form>`;
+          }
         } else {
           button += `<button type="button" disabled="true">Level Up</button>`
         }

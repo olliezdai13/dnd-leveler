@@ -48,12 +48,31 @@ router.get('/character/:cid/edit', async function(req, res) {
 
 /* GET race list page */
 router.get('/racelist', async function(req, res) {
-    const rows = await db.query(`SELECT * FROM race;`, []);
-    console.log(rows);
-    res.render('racelist', {
-      "racelist" : rows,
-      "title" : "Races"
-    });
+  const rows = await db.query(`SELECT * FROM race;`, []);
+  console.log(rows);
+  res.render('racelist', {
+    "racelist" : rows,
+    "title" : "Races"
+  });
+});
+
+router.post('/testform', async function(req, res) {
+  console.log("Processing POST /testform");
+  console.log(req.body.field1);
+  res.redirect('/');
+});
+
+
+// TODO: make it so that you can't increase an attribute beyond 20.
+router.post('/levelup', async function(req, res) {
+  console.log("Processing POST /levelup");
+  console.log("leveling up character with cid: " + req.body.cid);
+  console.log("increasing attributes: " + req.body.attribute1 + " and " + req.body.attribute2);
+  var attribute1 = (typeof req.body.attribute1 === 'undefined') ? null : req.body.attribute1;
+  var attribute2 = (typeof req.body.attribute2 === 'undefined') ? null : req.body.attribute2;
+  const levelup_response = await db.query("CALL level_up(?, ?, ?);", [req.body.cid, attribute1, attribute2]);
+  console.log(levelup_response);
+  res.redirect('/');
 });
 
 module.exports = router;
