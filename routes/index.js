@@ -18,15 +18,18 @@ router.get('/character/:cid', async function(req, res) {
   const cid = req.params.cid;
   const rows = await db.query(`SELECT * FROM ddcharacter dd JOIN race rr ON dd.race_name = rr.race_name JOIN class cc ON dd.class_name = cc.class_name JOIN background bb ON dd.bg_name = bb.bg_name WHERE character_id = ?;`, [cid]);
   console.log(rows[0]);
-  const statrows = await db.query(`CALL calc_character_stats(?)`, [cid]);
+  const statrows = await db.query(`CALL calc_character_stats(?);`, [cid]);
   console.log(statrows[0][0]);
   const sthrowrows = await db.query(`SELECT stat from ddcharacter dd JOIN classSavingThrow st ON dd.class_name = st.class_name WHERE dd.character_id = ?;`, [cid]);
   console.log(sthrowrows);
+  const hprows = await db.query(`CALL calc_hp(?);`, [cid]);
+  console.log(hprows[0][0]);
   res.render('characterinfo', 
   { 
     "character": rows[0],
     "stats": statrows[0][0],
     "savingthrows": sthrowrows,
+    "hp_stats": hprows[0][0],
     title: rows[0].character_name 
   });
 });

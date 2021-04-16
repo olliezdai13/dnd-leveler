@@ -511,6 +511,8 @@ DROP PROCEDURE IF EXISTS calc_character_stats;
  -- Takes two stats for the ability score increase (only applies at the relevant levels). Input can be NULL but will error if the level-up expects an ability score increase
 DROP PROCEDURE IF EXISTS level_up;
 
+DROP PROCEDURE IF EXISTS calc_hp;
+
 DELIMITER $$
 CREATE PROCEDURE get_race_stats(character_id INT)
 BEGIN
@@ -537,6 +539,24 @@ BEGIN
     SELECT str_score + str_change AS str, dex_score + dex_change AS dex, con_score + con_change AS con, wis_score + wis_change AS wis, int_score + int_change AS `int`, cha_score + cha_change AS cha,
 		str_score AS str_base, dex_score AS dex_base, con_score AS con_base, wis_score AS wis_base, int_score AS int_base, cha_score AS cha_base, level, proficiency_bonus
 		FROM ddcharacter dd WHERE dd.character_id = character_id;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE calc_hp(character_id INT)
+BEGIN
+    DECLARE lvl INT;
+    DECLARE char_class varchar(255);
+    DECLARE hp_increment INT;
+    DECLARE constat INT;
+    DECLARE con_change INT;
+    
+    SET con_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Constitution");
+    SET constat = (SELECT con_score + con_change AS con FROM ddcharacter dd WHERE dd.character_id = character_id);
+    SET lvl = (SELECT `level` as val FROM ddcharacter dd WHERE dd.character_id = character_id);
+    SET char_class = (SELECT class_name as val FROM ddcharacter dd WHERE dd.character_id = character_id);
+    SET hp_increment = (SELECT cc.hp_increment as val FROM class cc JOIN ddcharacter dd ON dd.class_name = cc.class_name WHERE dd.character_id = character_id);
+    
+    SELECT hp_base + ((lvl - 1) * (hp_increment + FLOOR((constat - 10) / 2))) AS hp_max, char_class AS classname, lvl AS level, hp_increment, hit_dice, lvl AS num_hit_dice, FLOOR((constat - 10) / 2) AS con_modifier, constat AS con FROM class cc WHERE cc.class_name = char_class;
 END $$
 
 DELIMITER $$
@@ -580,6 +600,7 @@ END $$
 
 CALL level_up(1, "Charisma", NULL);
 CALL calc_character_stats(1);
+CALL calc_hp(1);
 
 -- test
 SELECT skill_name, stat FROM characterToSkill JOIN skill USING(skill_name) WHERE character_id = 1;

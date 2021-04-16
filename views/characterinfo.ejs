@@ -24,6 +24,8 @@
     <p><b>Level:</b> <%- character.level %></p>
     <p><b>Background:</b> <%- character.bg_name %></p>
     <p><b>Alignment:</b> <%- character.alignment %></p>
+    <p><b>HP Max:</b> <%- hp_stats.hp_max %></p>
+    <p><b>Hit Dice:</b> <%- hp_stats.num_hit_dice %>d<%- hp_stats.hit_dice %></p>
 
     <h2>Attributes</h2>
     <p><b>Strength:</b> <%- stats.str %> (<%- Math.floor((parseInt(stats.str) - 10) / 2)  %>)</p>
