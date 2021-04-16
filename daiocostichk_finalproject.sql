@@ -490,14 +490,6 @@ INSERT INTO statchange (character_id, stat, amount, origin) VALUES
     (1, "Dexterity", 1, "Race"),
     (1, "Wisdom", 1, "Race");
     
-INSERT INTO charactertoskill (character_id, skill_name) VALUES
-	(1, "Animal Handling"),
-	(1, "Survival"),
-	(1, "Athletics"),
-	(1, "Insight"),
-	(1, "Investigation"),
-	(1, "Arcana"),
-	(1, "Medicine");
                         
 -- Procedures:
  -- Fetches a race's stat change options
@@ -579,5 +571,3 @@ END $$
 
 CALL level_up(1, "Charisma", NULL);
 CALL calc_character_stats(1);
-
-SELECT skill_name, stat from ddcharacter dd JOIN charactertoskill chts USING(character_id) JOIN skill USING(skill_name) WHERE dd.character_id = 1;
