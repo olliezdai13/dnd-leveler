@@ -489,6 +489,7 @@ INSERT INTO statchange (character_id, stat, amount, origin) VALUES
 	(1, "Charisma", 2, "Race"),
     (1, "Dexterity", 1, "Race"),
     (1, "Wisdom", 1, "Race");
+    
                         
 -- Procedures:
  -- Fetches a race's stat change options

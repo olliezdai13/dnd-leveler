@@ -12,7 +12,13 @@
       var list = '';
       for (c of characterlist) {
         var path = `../character/${c.character_id}`;
-        list += `<li><a href=${path}>${c.character_name}</a>, ${c.alignment}, Level ${c.level} ${c.class_name} </li>`;
+        var button = '';
+        if (20 > c.level) {
+          button += `<button type="button">Level Up</button>`
+        } else {
+          button += `<button type="button" disabled="true">Level Up</button>`
+        }
+        list += `<li><a href=${path}>${c.character_name}</a>, ${c.alignment}, Level ${c.level} ${c.class_name} ${button}</li>`;
       } 
       %>
     <%- list %>
