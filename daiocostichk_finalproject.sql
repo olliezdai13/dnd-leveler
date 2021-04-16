@@ -549,14 +549,16 @@ BEGIN
     DECLARE hp_increment INT;
     DECLARE constat INT;
     DECLARE con_change INT;
+    DECLARE con_mod INT;
     
     SET con_change = (SELECT COALESCE(SUM(amount), 0) AS val FROM statchange sc WHERE sc.character_id = character_id AND sc.stat = "Constitution");
     SET constat = (SELECT con_score + con_change AS con FROM ddcharacter dd WHERE dd.character_id = character_id);
     SET lvl = (SELECT `level` as val FROM ddcharacter dd WHERE dd.character_id = character_id);
     SET char_class = (SELECT class_name as val FROM ddcharacter dd WHERE dd.character_id = character_id);
     SET hp_increment = (SELECT cc.hp_increment as val FROM class cc JOIN ddcharacter dd ON dd.class_name = cc.class_name WHERE dd.character_id = character_id);
+    SET con_mod = FLOOR((constat - 10) / 2);
     
-    SELECT hp_base + ((lvl - 1) * (hp_increment + FLOOR((constat - 10) / 2))) AS hp_max, char_class AS classname, lvl AS level, hp_increment, hit_dice, lvl AS num_hit_dice, FLOOR((constat - 10) / 2) AS con_modifier, constat AS con FROM class cc WHERE cc.class_name = char_class;
+    SELECT hp_base + con_mod + ((lvl - 1) * (hp_increment + con_mod)) AS hp_max, char_class AS classname, lvl AS level, hp_increment, hit_dice, lvl AS num_hit_dice, con_mod AS con_modifier, constat AS con FROM class cc WHERE cc.class_name = char_class;
 END $$
 
 DELIMITER $$
