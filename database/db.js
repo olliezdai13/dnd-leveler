@@ -4,7 +4,7 @@ async function query(sql, params) {
   const connection = await mysql2.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'root1234',
+    password: 'password',
     database: 'ddcharactermanager'
   });
   const [results, ] = await connection.execute(sql, params);

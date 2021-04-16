@@ -485,7 +485,7 @@ INSERT INTO classsavingthrow (class_name, stat) VALUES
 -- Sample character (assuming height in CM and weight in KG)
 INSERT INTO ddcharacter (character_id, character_name, race_name, class_name, bg_name, level, str_score, dex_score, con_score, int_score, wis_score, cha_score, alignment, proficiency_bonus, deity_id, sex, height, weight, eyes, skin, portraitPath) VALUES
 						(1, "Leglass", "Half-Elf", "Ranger", "Folk Hero", 1, 10, 15, 10, 11, 15, 10, "Neutral good", 2, NULL, "Female", 160, 54, "Blue", "Light", NULL);
-
+                        
 INSERT INTO statchange (character_id, stat, amount, origin) VALUES
 	(1, "Charisma", 2, "Race"),
     (1, "Dexterity", 1, "Race"),
