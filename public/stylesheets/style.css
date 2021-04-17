@@ -1,8 +1,21 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: rgb(235, 227, 216) url('../images/dnd-logo.png');
 }
 
 a {
   color: #00B7FF;
+}
+
+input {
+  display: block;
+  margin-bottom: 5px;
+  width: 200px;
+}
+
+select {
+  display: block;
+  margin-bottom: 5px;
+  width: 207px;
 }

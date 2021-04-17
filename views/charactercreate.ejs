@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+      <h1><%= title %></h1>
+
+      <!-- TODO: Gather Base Attributes -->
+      <!-- TODO: List / Select Proficiencies (background fixed, class choose 2-3, race fixed OR Any2 OR Any1) -->
+      <!-- TODO: Select Attribute Increases (race fixed OR AnyOther2) -->
+
+      <form method="post" action="/charactercreate" novalidate>
+        <label for="character_name">Name<span style="color: red;">*</span></label>
+        <input type="text" id="character_name" name="character_name" value="">
+
+        <% 
+        var base_str = 10;
+        var base_dex = 10;
+        var base_con = 10;
+        var base_int = 10;
+        var base_wis = 10;
+        var base_cha = 10;
+        %>
+
+        <script>
+          raceSelected = function(element) {
+            var racehtml = '';
+            console.log(element);
+            var racelist = <%-JSON.stringify(races)%>; // This is not an error. VSCode just doesn't like it.
+            console.log(racelist);
+            racehtml += `<p>${racelist.find(r => r.race_name === element.value).description}</p>`;
+
+            var racestats = <%-JSON.stringify(racestats)%>;
+            racestats = racestats.filter(rs => rs.race_name === element.value);
+            console.log(racestats);
+            for (rs of racestats) {
+              if (rs.stat === "AnyOther2") {
+                var options = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"];
+                for (stat of racestats) {
+                  if (options.includes(stat.stat)) {
+                    var index = options.indexOf(stat.stat);
+                    if (index !== -1) {
+                      options.splice(index, 1);
+                    }
+                  }
+                }
+                var optionshtml = '';
+                for (option of options) {
+                  optionshtml += `<option value="${option}">${option}</option>`;
+                }
+                racehtml += `<div>Choose any 2 other stats <select style="display:inline-block;" id="race_option_1" name="race_option_1">${optionshtml}</select>`;
+                racehtml += `<select style="display:inline-block;" id="race_option_2" name="race_option_2">${optionshtml}</select></div>`;
+              } else {
+                racehtml += `<p>${rs.stat} +${rs.amount}</p>`;
+              }
+            }
+            document.getElementById("racedescription").innerHTML = racehtml;
+          }
+        </script>
+        
+
+        <%
+        var racesoptions = '';
+        racesoptions += `<option disabled selected value> -- select an option -- </option>`;
+        for (r of races) {
+          racesoptions += `<option value="${r.race_name}">${r.race_name}</option>\n`;
+        }
+        %>
+        <label for="race_name">Race<span style="color: red;">*</span></label>
+        <select id="race_name" name="race_name" onchange="raceSelected(this)">
+          <%- racesoptions %>
+        </select>
+        <span id="racedescription"></span>
+
+        <%
+        var classoptions = '';
+        classoptions += `<option disabled selected value> -- select an option -- </option>`;
+        for (c of classes) {
+          classoptions += `<option value="${c.class_name}">${c.class_name}</option>\n`;
+        }
+        %>
+        <label for="class_name">Class<span style="color: red;">*</span></label>
+        <select id="class_name" name="class_name">
+          <%- classoptions %>
+        </select>
+
+        <%
+        var backgroundoptions = '';
+        backgroundoptions += `<option disabled selected value> -- select an option -- </option>`;
+        for (b of backgrounds) {
+          backgroundoptions += `<option value="${b.bg_name}">${b.bg_name}</option>\n`;
+        }
+        %>
+        <label for="bg_name">Background<span style="color: red;">*</span></label>
+        <select id="bg_name" name="bg_name">
+          <%- backgroundoptions %>
+        </select>
+
+        <label for="alignment">Alignment<span style="color: red;">*</span></label>
+        <select id="alignment" name="alignment">
+          <option disabled selected value> -- select an option -- </option>
+          <option value="Lawful good">Lawful, good</option>
+          <option value="Lawful neutral">Lawful, neutral</option>
+          <option value="Lawful evil">Lawful, evil</option>
+          <option value="Neutral good">Neutral, good</option>
+          <option value="Neutral">True neutral</option>
+          <option value="Neutral evil">Neutral, evil</option>
+          <option value="Chaotic good">Chaotic, good</option>
+          <option value="Chaotic neutral">Chaotic, neutral</option>
+          <option value="Chaotic evil">Chaotic, evil</option>
+        </select>
+
+        <label for="sex">Sex</label>
+        <select id="sex" name="sex">
+          <option disabled selected value> -- select an option -- </option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="None">None</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label for="height">Height (inches)</label>
+        <input type="number" id="height" name="height">
+
+        <label for="weight">Weight (lbs)</label>
+        <input type="number" id="weight" name="weight">
+
+        <label for="eyes">Eye Color</label>
+        <select id="eyes" name="eyes">
+          <option disabled selected value> -- select an option -- </option>
+          <option value="Black">Black</option>
+          <option value="Blue">Blue</option>
+          <option value="Brown">Brown</option>
+          <option value="Green">Green</option>
+          <option value="Red">Red</option>
+          <option value="Yellow">Yellow</option>
+        </select>
+
+        <label for="skin">Skin Tone</label>
+        <select id="skin" name="skin">
+          <option disabled selected value> -- select an option -- </option>
+          <option value="Light">Light</option>
+          <option value="Brown">Brown</option>
+          <option value="Black">Yellow</option>
+          <option value="Blue">Blue</option>
+          <option value="Green">Green</option>
+          <option value="Red">Red</option>
+          <option value="Yellow">Yellow</option>
+        </select>
+
+        <%
+        var deityoptions = '';
+        deityoptions += `<option disabled selected value> -- select an option -- </option>`;
+        for (d of deities) {
+          deityoptions += `<option value="${d.deity_name}">${d.deity_name} - ${d.title}</option>\n`;
+        }
+        %>
+        <label for="deity_name">Deity</label>
+        <select id="deity_name" name="deity_name">
+          <%- deityoptions %>
+        </select>
+
+        <input type="submit" value="Create">
+
+      </form>
+
+  </body>
+</html>

@@ -133,6 +133,29 @@ router.get('/character/:cid/edit', async function(req, res) {
   });
 });
 
+/* GET character create page. */
+router.get('/charactercreate', async function(req, res) {
+  const racestatrows = await db.query("SELECT rr.race_name AS race_name, stat, amount FROM race rr JOIN racialstatchange sc ON rr.race_name = sc.race_name;");
+  console.log(racestatrows);
+  const racesrows = await db.query("SELECT * FROM race;");
+  console.log(racesrows);
+  const classrows = await db.query("SELECT * FROM class;");
+  //console.log(classrows);
+  const backgroundrows = await db.query("SELECT * FROM background;");
+  //console.log(backgroundrows);
+  const deityrows = await db.query("SELECT * FROM deity;");
+  //console.log(deityrows);
+  res.render('charactercreate', 
+  { 
+    "races": racesrows,
+    "racestats": racestatrows,
+    "classes": classrows,
+    "backgrounds": backgroundrows,
+    "deities": deityrows,
+    title: 'Create New Character'
+  });
+});
+
 /* GET race list page */
 router.get('/racelist', async function(req, res) {
   const rows = await db.query(`SELECT * FROM race;`, []);
@@ -146,6 +169,13 @@ router.get('/racelist', async function(req, res) {
 router.post('/testform', async function(req, res) {
   console.log("Processing POST /testform");
   console.log(req.body.field1);
+  res.redirect('/');
+});
+
+
+router.post('/charactercreate', async function(req, res) {
+  console.log("Processing POST /charactercreate");
+  console.log(req.body);
   res.redirect('/');
 });
 
