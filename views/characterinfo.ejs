@@ -46,8 +46,40 @@
     
 
     <h2>Skills</h2>
-    <p>TODO (query skill proficiencies)</p>
-    <p>Example: Athletics skill = stats.str + stats.proficiency_bonus (if proficient in athletics)</p>
+    
+    
+    <% for (var i = 0; i <= allskills.length;  i++ ) { %>
+      <% if (allskills[i] != null) { %>
+        <% var mod; %>
+        <% switch (allskills[i].stat) {
+          case 'Strength':
+            mod = strmod;
+            break;
+          case 'Dexterity':
+            mod = dexmod;
+            break;
+          case 'Constitution':
+            mod = conmod;
+            break;
+          case 'Intelligence':
+            mod = intmod;
+            break;
+          case 'Wisdom':
+            mod = wismod;
+            break;
+          case 'Charisma':
+            mod = chamod;
+            break;
+        } %>
+
+        <% var score = (skills.includes(allskills[i]))? mod + stats.proficiency_bonus : mod; %>
+
+        <p> <%- allskills[i].skill_name %>: <%- score %> </p>
+
+      <% } %>
+    <% } %>
+    
+    <p>TODO (Bold skills w/ proficiencies)</p>
 
     <h2>Other Stats</h2>
     <p><b>Speed:</b> <%- character.speed %></p>
