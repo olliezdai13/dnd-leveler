@@ -24,12 +24,19 @@ router.get('/character/:cid', async function(req, res) {
   console.log(sthrowrows);
   const hprows = await db.query(`CALL calc_hp(?);`, [cid]);
   console.log(hprows[0][0]);
+  const allskills = await db.query(`SELECT skill_name, stat FROM skill`);
+  console.log(allskills);
+  const skillrows = await db.query(`SELECT skill_name, stat FROM characterToSkill JOIN skill USING(skill_name) WHERE character_id = ?;`, [cid]);
+  console.log(skillrows);
+  console.log(skillrows[0]);
   res.render('characterinfo', 
   { 
     "character": rows[0],
     "stats": statrows[0][0],
     "savingthrows": sthrowrows,
     "hp_stats": hprows[0][0],
+    "allskills": allskills,
+    "skills": skillrows,
     title: rows[0].character_name 
   });
 });
