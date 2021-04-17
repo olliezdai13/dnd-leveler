@@ -16,24 +16,22 @@
         if (20 > c.level) {
           if (c.level === 3 || c.level === 7 || c.level === 11 || c.level === 15 || c.level === 18)
           {
+            var optionshtml1 = '';
+            for (attr of c.options1) {
+              optionshtml1 += `<option value=${attr}>${attr}</option>`;
+            }
+            var optionshtml2 = '';
+            for (attr of c.options2) {
+              optionshtml2 += `<option value=${attr}>${attr}</option>`;
+            }
             button += 
             `<div id=${c.character_id} style="display: inline-block;">
               <form method="post" action="/levelup" novalidate>
                 <select name="attribute1">
-                  <option value="Strength">Strength</option>
-                  <option value="Dexterity">Dexterity</option>
-                  <option value="Constitution">Constitution</option>
-                  <option value="Intelligence">Intelligence</option>
-                  <option value="Wisdom">Wisdom</option>
-                  <option value="Charisma">Charisma</option>
+                  ${optionshtml1}
                 </select>
                 <select name="attribute2">
-                  <option value="Strength">Strength</option>
-                  <option value="Dexterity">Dexterity</option>
-                  <option value="Constitution">Constitution</option>
-                  <option value="Intelligence">Intelligence</option>
-                  <option value="Wisdom">Wisdom</option>
-                  <option value="Charisma">Charisma</option>
+                  ${optionshtml2}
                 </select>
                 <input type="submit" value="Level Up">
                 <input type="hidden" name="cid" value=${c.character_id}>

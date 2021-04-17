@@ -5,10 +5,87 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', async function(req, res) {
   const rows = await db.query(`SELECT * FROM ddcharacter;`);
-  console.log(rows);
+
+  var characterlist = new Array();
+
+  for (c of rows) {
+    // validate that no attributes go above 20
+    // Don't add attributes to characters if they would go above 20
+
+    var statrows = await db.query(`CALL calc_character_stats(?);`, [c.character_id]);
+    statrows = statrows[0][0];
+    console.log(statrows);
+
+    var str_new = statrows.str;
+    var dex_new = statrows.dex;
+    var con_new = statrows.con;
+    var wis_new = statrows.wis;
+    var int_new = statrows.int;
+    var cha_new = statrows.cha;
+
+    var options1 = new Array();
+    var options2 = new Array();
+
+    str_new++;
+    if (str_new <= 20) {
+      options1.push("Strength");
+    }
+    dex_new++;
+    if (dex_new <= 20) {
+      options1.push("Dexterity");
+    }
+    con_new++;
+    if (con_new <= 20) {
+      options1.push("Constitution");
+    }
+    wis_new++;
+    if (wis_new <= 20) {
+      options1.push("Wisdom");
+    }
+    int_new++;
+    if (int_new <= 20) {
+      options1.push("Intelligence");
+    }
+    cha_new++;
+    if (cha_new <= 20) {
+      options1.push("Charisma");
+    }
+
+    str_new++;
+    if (str_new <= 20) {
+      options2.push("Strength");
+    }
+    dex_new++;
+    if (dex_new <= 20) {
+      options2.push("Dexterity");
+    }
+    con_new++;
+    if (con_new <= 20) {
+      options2.push("Constitution");
+    }
+    wis_new++;
+    if (wis_new <= 20) {
+      options2.push("Wisdom");
+    }
+    int_new++;
+    if (int_new <= 20) {
+      options2.push("Intelligence");
+    }
+    cha_new++;
+    if (cha_new <= 20) {
+      options2.push("Charisma");
+    }
+
+    c.options1 = options1;
+    c.options2 = options2;
+    characterlist.push(c);
+  }
+
+  console.log(characterlist);
+
   res.render('home', 
   { 
-    "characterlist": rows,
+    "characterlist": characterlist,
     title: 'D&D Character Leveling Tool' 
   });
 });
@@ -80,6 +157,7 @@ router.post('/levelup', async function(req, res) {
   console.log("increasing attributes: " + req.body.attribute1 + " and " + req.body.attribute2);
   var attribute1 = (typeof req.body.attribute1 === 'undefined') ? null : req.body.attribute1;
   var attribute2 = (typeof req.body.attribute2 === 'undefined') ? null : req.body.attribute2;
+
   const levelup_response = await db.query("CALL level_up(?, ?, ?);", [req.body.cid, attribute1, attribute2]);
   console.log(levelup_response);
   res.redirect('/');
