@@ -150,7 +150,6 @@ router.post('/testform', async function(req, res) {
 });
 
 
-// TODO: make it so that you can't increase an attribute beyond 20.
 router.post('/levelup', async function(req, res) {
   console.log("Processing POST /levelup");
   console.log("leveling up character with cid: " + req.body.cid);
