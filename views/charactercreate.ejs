@@ -11,9 +11,9 @@
       <!-- TODO: List / Select Proficiencies (background fixed, class choose 2-3, race fixed OR Any2 OR Any1) -->
       <!-- TODO: Select Attribute Increases (race fixed OR AnyOther2) -->
 
-      <form method="post" action="/charactercreate" novalidate>
+      <form method="post" action="/charactercreate">
         <label for="character_name">Name<span style="color: red;">*</span></label>
-        <input type="text" id="character_name" name="character_name" value="">
+        <input type="text" id="character_name" name="character_name" value="" required>
 
         <% 
         var base_str = 10;
@@ -50,8 +50,8 @@
                 for (option of options) {
                   optionshtml += `<option value="${option}">${option}</option>`;
                 }
-                racehtml += `<div>Choose any 2 other stats <select style="display:inline-block;" id="race_option_1" name="race_option_1">${optionshtml}</select>`;
-                racehtml += `<select style="display:inline-block;" id="race_option_2" name="race_option_2">${optionshtml}</select></div>`;
+                racehtml += `<div>Choose any 2 other stats <select required style="display:inline-block;" id="race_option_1" name="race_option_1">${optionshtml}</select>`;
+                racehtml += `<select required style="display:inline-block;" id="race_option_2" name="race_option_2">${optionshtml}</select></div>`;
               } else {
                 racehtml += `<p>${rs.stat} +${rs.amount}</p>`;
               }
@@ -69,7 +69,7 @@
         }
         %>
         <label for="race_name">Race<span style="color: red;">*</span></label>
-        <select id="race_name" name="race_name" onchange="raceSelected(this)">
+        <select required id="race_name" name="race_name" onchange="raceSelected(this)">
           <%- racesoptions %>
         </select>
         <span id="racedescription"></span>
@@ -82,7 +82,7 @@
         }
         %>
         <label for="class_name">Class<span style="color: red;">*</span></label>
-        <select id="class_name" name="class_name">
+        <select required id="class_name" name="class_name">
           <%- classoptions %>
         </select>
 
@@ -94,12 +94,12 @@
         }
         %>
         <label for="bg_name">Background<span style="color: red;">*</span></label>
-        <select id="bg_name" name="bg_name">
+        <select required id="bg_name" name="bg_name">
           <%- backgroundoptions %>
         </select>
 
         <label for="alignment">Alignment<span style="color: red;">*</span></label>
-        <select id="alignment" name="alignment">
+        <select required id="alignment" name="alignment">
           <option disabled selected value> -- select an option -- </option>
           <option value="Lawful good">Lawful, good</option>
           <option value="Lawful neutral">Lawful, neutral</option>
@@ -154,11 +154,11 @@
         var deityoptions = '';
         deityoptions += `<option disabled selected value> -- select an option -- </option>`;
         for (d of deities) {
-          deityoptions += `<option value="${d.deity_name}">${d.deity_name} - ${d.title}</option>\n`;
+          deityoptions += `<option value="${d.deity_id}">${d.deity_name} - ${d.title}</option>\n`;
         }
         %>
         <label for="deity_name">Deity</label>
-        <select id="deity_name" name="deity_name">
+        <select id="deity_name" name="deity_id">
           <%- deityoptions %>
         </select>
 

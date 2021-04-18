@@ -105,7 +105,6 @@ router.get('/character/:cid', async function(req, res) {
   console.log(allskills);
   const skillrows = await db.query(`SELECT skill_name, stat FROM characterToSkill JOIN skill USING(skill_name) WHERE character_id = ?;`, [cid]);
   console.log(skillrows);
-  console.log(skillrows[0]);
   res.render('characterinfo', 
   { 
     "character": rows[0],
@@ -176,6 +175,30 @@ router.post('/testform', async function(req, res) {
 router.post('/charactercreate', async function(req, res) {
   console.log("Processing POST /charactercreate");
   console.log(req.body);
+  var formcharacter = req.body;
+
+  // validate form input
+  if (typeof formcharacter.sex === 'undefined') {
+    formcharacter.sex = null;
+  }
+  if (typeof formcharacter.height === 'undefined') {
+    formcharacter.height= null;
+  }
+  if (typeof formcharacter.weight === 'undefined') {
+    formcharacter.weight = null;
+  }
+  if (typeof formcharacter.eyes === 'undefined') {
+    formcharacter.eyes = null;
+  }
+  if (typeof formcharacter.skin === 'undefined') {
+    formcharacter.skin = null;
+  }
+  if (typeof formcharacter.deity_id === 'undefined') {
+    formcharacter.deity_id = null;
+  }
+
+  const result = await db.query("INSERT INTO ddcharacter (character_name, race_name, class_name, bg_name, level, str_score, dex_score, con_score, int_score, wis_score, cha_score, alignment, proficiency_bonus, deity_id, sex, height, weight, eyes, skin, portraitPath) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                                                          [formcharacter.character_name, formcharacter.race_name, formcharacter.class_name, formcharacter.bg_name, 1, 10, 10, 10, 10, 10, 10, formcharacter.alignment, 2, formcharacter.deity_id, formcharacter.sex, formcharacter.height, formcharacter.weight, formcharacter.eyes, formcharacter.skin, null]);
   res.redirect('/');
 });
 
