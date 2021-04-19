@@ -33,6 +33,7 @@
             racehtml += `<p>${racelist.find(r => r.race_name === element.value).description}</p>`;
 
             var racestats = <%-JSON.stringify(racestats)%>;
+            var racestats_vanilla = new Array();
             racestats = racestats.filter(rs => rs.race_name === element.value);
             console.log(racestats);
             for (rs of racestats) {
@@ -54,8 +55,11 @@
                 racehtml += `<select required style="display:inline-block;" id="race_option_2" name="race_option_2">${optionshtml}</select></div>`;
               } else {
                 racehtml += `<p>${rs.stat} +${rs.amount}</p>`;
+                racestats_vanilla.push(rs);
               }
             }
+            var arraystring = JSON.stringify(racestats_vanilla);
+            racehtml += `<input type="hidden" name="race_stats" value='${arraystring}'>`;
             document.getElementById("racedescription").innerHTML = racehtml;
           }
         </script>
@@ -161,6 +165,19 @@
         <select id="deity_name" name="deity_id">
           <%- deityoptions %>
         </select>
+
+        <label for="base_str">Strength</label>
+        <input required style="width: 35px;" type="number" id="base_str" name="base_str" value=10 min=0 max=20>
+        <label for="base_str">Constitution</label>
+        <input required style="width: 35px;" type="number" id="base_con" name="base_con" value=10 min=0 max=20>
+        <label for="base_str">Dexterity</label>
+        <input required style="width: 35px;" type="number" id="base_dex" name="base_dex" value=10 min=0 max=20>
+        <label for="base_str">Intelligence</label>
+        <input required style="width: 35px;" type="number" id="base_int" name="base_int" value=10 min=0 max=20>
+        <label for="base_str">Wisdom</label>
+        <input required style="width: 35px;" type="number" id="base_wis" name="base_wis" value=10 min=0 max=20>
+        <label for="base_str">Charisma</label>
+        <input required style="width: 35px;" type="number" id="base_cha" name="base_cha" value=10 min=0 max=20>
 
         <input type="submit" value="Create">
 

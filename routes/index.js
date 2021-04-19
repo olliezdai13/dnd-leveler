@@ -194,8 +194,35 @@ router.post('/charactercreate', async function(req, res) {
     formcharacter.deity_id = null;
   }
 
+
+  var racestatsarray = JSON.parse(formcharacter.race_stats);
+  console.log("PARSED ARRAY");
+  console.log(racestatsarray);
+
+  // handle racial stat increases
+  if (typeof formcharacter.race_option_1 != 'undefined') {
+    racestatsarray.push({race_name: formcharacter.race_name, stat: formcharacter.race_option_1, amount: 1});
+  }
+  if (typeof formcharacter.race_option_2 != 'undefined') {
+    racestatsarray.push({race_name: formcharacter.race_name, stat: formcharacter.race_option_2, amount: 1});
+  }
+  console.log(racestatsarray);
+
   const result = await db.query("INSERT INTO ddcharacter (character_name, race_name, class_name, bg_name, level, str_score, dex_score, con_score, int_score, wis_score, cha_score, alignment, proficiency_bonus, deity_id, sex, height, weight, eyes, skin, portraitPath) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                                                          [formcharacter.character_name, formcharacter.race_name, formcharacter.class_name, formcharacter.bg_name, 1, 10, 10, 10, 10, 10, 10, formcharacter.alignment, 2, formcharacter.deity_id, formcharacter.sex, formcharacter.height, formcharacter.weight, formcharacter.eyes, formcharacter.skin, null]);
+  [formcharacter.character_name, formcharacter.race_name, formcharacter.class_name, formcharacter.bg_name, 1, formcharacter.base_str, formcharacter.base_dex, formcharacter.base_con, formcharacter.base_int, formcharacter.base_wis, formcharacter.base_cha, formcharacter.alignment, 2, formcharacter.deity_id, formcharacter.sex, formcharacter.height, formcharacter.weight, formcharacter.eyes, formcharacter.skin, null]);
+  
+  console.log(result);
+
+  var statchanges = '';
+  for (statchange of racestatsarray) {
+    statchanges += `(${result.insertId}, "${statchange.stat}", ${statchange.amount}, "Race"),`;
+  }
+  if (statchanges.slice(-1) === ",") {
+    statchanges = statchanges.substring(0, statchanges.length - 1);
+  }
+
+  console.log(statchanges);
+  const stat_result = await db.query(`INSERT INTO statchange (character_id, stat, amount, origin) VALUES ${statchanges}`);
   res.redirect('/');
 });
 
