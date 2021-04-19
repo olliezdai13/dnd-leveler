@@ -15,7 +15,7 @@ router.get('/', async function(req, res) {
   
       var statrows = await db.query(`CALL calc_character_stats(?);`, [c.character_id]).catch( error => { console.error(error) });
       statrows = statrows[0][0];
-      console.log(statrows);
+      // console.log(statrows);
   
       var str_new = statrows.str;
       var dex_new = statrows.dex;
@@ -82,7 +82,7 @@ router.get('/', async function(req, res) {
       characterlist.push(c);
     }
   
-    console.log(characterlist);
+    // console.log(characterlist);
   
     res.render('home', 
     { 

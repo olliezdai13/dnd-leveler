@@ -601,8 +601,3 @@ END $$
 
 
 CALL level_up(1, "Charisma", NULL);
-CALL calc_character_stats(1);
-CALL calc_hp(1);
-
--- test
-SELECT skill_name, stat FROM characterToSkill JOIN skill USING(skill_name) WHERE character_id = 1;
