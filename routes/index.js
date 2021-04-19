@@ -178,22 +178,19 @@ router.post('/charactercreate', async function(req, res) {
   var formcharacter = req.body;
 
   // validate form input
-  if (typeof formcharacter.sex === 'undefined') {
-    formcharacter.sex = null;
-  }
-  if (typeof formcharacter.height === 'undefined') {
+  if (typeof formcharacter.height === 'undefined' || formcharacter.height === '') {
     formcharacter.height= null;
   }
-  if (typeof formcharacter.weight === 'undefined') {
+  if (typeof formcharacter.weight === 'undefined' || formcharacter.weight === '') {
     formcharacter.weight = null;
   }
-  if (typeof formcharacter.eyes === 'undefined') {
+  if (typeof formcharacter.eyes === 'undefined' || formcharacter.eyes === '') {
     formcharacter.eyes = null;
   }
-  if (typeof formcharacter.skin === 'undefined') {
+  if (typeof formcharacter.skin === 'undefined' || formcharacter.skin === '') {
     formcharacter.skin = null;
   }
-  if (typeof formcharacter.deity_id === 'undefined') {
+  if (typeof formcharacter.deity_id === 'undefined' || formcharacter.deity_id === '') {
     formcharacter.deity_id = null;
   }
 
