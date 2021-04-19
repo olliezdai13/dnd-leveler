@@ -232,7 +232,7 @@ router.post('/charactercreate', async function(req, res) {
     }
     // console.log(racestatsarray);
 
-    const result = await db.query("CALL insert_char(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+    const result = await db.query("INSERT INTO ddcharacter (character_name, race_name, class_name, bg_name, level, str_score, dex_score, con_score, int_score, wis_score, cha_score, alignment, proficiency_bonus, deity_id, sex, height, weight, eyes, skin, portraitPath) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
     [formcharacter.character_name, formcharacter.race_name, formcharacter.class_name, formcharacter.bg_name, 1, formcharacter.base_str, formcharacter.base_dex, formcharacter.base_con, formcharacter.base_int, formcharacter.base_wis, formcharacter.base_cha, formcharacter.alignment, 2, formcharacter.deity_id, formcharacter.sex, formcharacter.height, formcharacter.weight, formcharacter.eyes, formcharacter.skin, null]).catch( error => { console.error(error) });
     
     // console.log(result);
