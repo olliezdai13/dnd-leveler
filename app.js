@@ -1,3 +1,10 @@
+
+var args = process.argv;
+if (typeof args[2] === 'undefined' || typeof args[3] === 'undefined') {
+  console.error("Usage: `npm start <username> <password>`");
+  process.exit(1);
+}
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -6,6 +13,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
 
 var app = express();
 
