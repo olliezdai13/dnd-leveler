@@ -513,6 +513,8 @@ DROP PROCEDURE IF EXISTS level_up;
 
 DROP PROCEDURE IF EXISTS calc_hp;
 
+DROP PROCEDURE IF EXISTS delete_char;
+
 DELIMITER $$
 CREATE PROCEDURE get_race_stats(character_id INT)
 BEGIN
@@ -599,5 +601,12 @@ BEGIN
 	END IF;
 END $$
 
+DELIMITER $$
+CREATE PROCEDURE delete_char(character_id INT)
+BEGIN
+    DELETE FROM statchange dd WHERE dd.character_id = character_id;
+    DELETE FROM ddcharacter dd WHERE dd.character_id = character_id;
+    DELETE FROM charactertoskill dd WHERE dd.character_id = character_id;
+END $$
 
 CALL level_up(1, "Charisma", NULL);
