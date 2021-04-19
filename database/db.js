@@ -7,7 +7,9 @@ async function query(sql, params) {
     password: process.argv[3],
     database: 'ddcharactermanager'
   });
-  const [results, ] = await connection.execute(sql, params);
+  const [results, ] = await connection.execute(sql, params).catch(err => { console.error(err); });
+
+  await connection.end().catch(err => { console.error(err); });
 
   return results;
 }
