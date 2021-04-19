@@ -6,6 +6,7 @@
   </head>
   <body>
     <% var link = `/character/${character.character_id}/edit`;
+       var dellink = `/character/${character.character_id}/delete`;
        var strmod = Math.floor((parseInt(stats.str) - 10) / 2);
        var dexmod = Math.floor((parseInt(stats.dex) - 10) / 2);
        var conmod = Math.floor((parseInt(stats.con) - 10) / 2);
@@ -54,7 +55,12 @@
        var stint = (savingthrows.some(e => e.stat === "Intelligence"))? intmod + stats.proficiency_bonus : intmod;
        var stwis = (savingthrows.some(e => e.stat === "Wisdom"))? wismod + stats.proficiency_bonus : wismod;
        var stcha = (savingthrows.some(e => e.stat === "Charisma"))? chamod + stats.proficiency_bonus : chamod; %>
-    <h1><%= title %> <a href=<%= link %>>(edit)</a></h1>
+    <h1><%= title %> 
+      <a href=<%= link %>><button>Edit</button></a> 
+      <form style="display: inline-block;" method="post" action=<%= dellink %>>
+        <input style="width: auto; display: inline-block;" value="Delete" type="submit">
+      </form>
+    </h1>
     <p><b>Race:</b> <%- character.race_name %></p>
     <p><b>Class:</b> <%- character.class_name %></p>
     <p><b>Level:</b> <%- character.level %></p>

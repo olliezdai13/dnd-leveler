@@ -285,4 +285,13 @@ router.post('/levelup', async function(req, res) {
   }
 });
 
+router.post('/character/:cid/delete', async function(req, res) {
+  try {
+    const result = await db.query("CALL delete_char(?);", [req.params.cid]).catch( error => { console.error(error) });
+    res.redirect('/');
+  } catch (err) {
+    res.status(500).json({message: err.message});
+  }
+});
+
 module.exports = router;
