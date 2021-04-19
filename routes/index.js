@@ -142,6 +142,12 @@ router.get('/charactercreate', async function(req, res) {
   //console.log(classrows);
   const backgroundrows = await db.query("SELECT * FROM background;");
   //console.log(backgroundrows);
+  const backgroundskillrows = await db.query("SELECT bb.bg_name, skill_name FROM background bb JOIN backgroundtoskill bs ON bb.bg_name = bs.bg_name;");
+  // console.log(backgroundskillrows);
+  const classskillrows = await db.query("SELECT cc.class_name, skill_name FROM class cc JOIN classtoskill cs ON cc.class_name = cs.class_name;");
+  // console.log(classskillrows);
+  const raceskillrows = await db.query("SELECT rr.race_name, skill_name FROM race rr JOIN racetoskill rs ON rr.race_name = rs.race_name;");
+  console.log(raceskillrows);
   const deityrows = await db.query("SELECT * FROM deity;");
   //console.log(deityrows);
   res.render('charactercreate', 
@@ -150,6 +156,9 @@ router.get('/charactercreate', async function(req, res) {
     "racestats": racestatrows,
     "classes": classrows,
     "backgrounds": backgroundrows,
+    "bgskills": backgroundskillrows,
+    "classskills": classskillrows,
+    "raceskills" : raceskillrows,
     "deities": deityrows,
     title: 'Create New Character'
   });
@@ -223,6 +232,21 @@ router.post('/charactercreate', async function(req, res) {
 
   console.log(statchanges);
   const stat_result = await db.query(`INSERT INTO statchange (character_id, stat, amount, origin) VALUES ${statchanges}`);
+  
+  var skills = JSON.parse(formcharacter.skills);
+  console.log("Skills");
+  console.log(skills);
+  console.log(skills[0]);
+  var skillchanges = '';
+  for (ss of skills) {
+    skillchanges += `(${result.insertId}, "${ss.skill_name}", "${ss.origin}"),`;
+  }
+  if (skillchanges.slice(-1) === ",") {
+    skillchanges = skillchanges.substring(0, skillchanges.length - 1);
+  }
+  console.log(skillchanges);
+  const skill_result = await db.query(`INSERT INTO charactertoskill (character_id, skill_name, origin) VALUES ${skillchanges}`)
+  
   res.redirect('/');
 });
 

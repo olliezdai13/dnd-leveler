@@ -7,35 +7,122 @@
   <body>
       <h1><%= title %></h1>
 
-      <!-- TODO: Gather Base Attributes -->
-      <!-- TODO: List / Select Proficiencies (background fixed, class choose 2-3, race fixed OR Any2 OR Any1) -->
-      <!-- TODO: Select Attribute Increases (race fixed OR AnyOther2) -->
+      <!-- TODO: Select Proficiencies (race Any2) -->
 
       <form method="post" action="/charactercreate">
-        <label for="character_name">Name<span style="color: red;">*</span></label>
+        <label for="character_name" class="formlabel">Name<span style="color: red;">*</span></label>
         <input type="text" id="character_name" name="character_name" value="" required>
 
-        <% 
-        var base_str = 10;
-        var base_dex = 10;
-        var base_con = 10;
-        var base_int = 10;
-        var base_wis = 10;
-        var base_cha = 10;
-        %>
 
         <script>
+          var bg_skills = new Array();
+          var class_skills = new Array();
+          var class_selected_skills = new Array();
+          var race_skills = new Array();
+          var skills = new Set();
+          var class_checkboxes = new Array();
+          var class_checkbox_total = 0;
+          var class_num_skills = 0;
+
+          calcSkills = function() {
+            skills = new Set();
+            for (ss of race_skills) {
+              skills.add({
+                "skill_name": ss, "origin":"Race"
+              });
+            }
+            for (ss of class_selected_skills) {
+              skills.add({
+                "skill_name": ss, "origin":"Class"
+              });
+            }
+            for (ss of bg_skills) {
+              skills.add({
+                "skill_name": ss, "origin":"Background"
+              });
+            }
+            console.log("All skills:");
+            console.log(skills);
+            var skillunion = new Set();
+            for (skill_row of skills) {
+              skillunion.add(skill_row.skill_name);
+            }
+            document.getElementById("proficiencylist").innerHTML = Array.from(skillunion).toString();
+            document.getElementById("all_skills").value = JSON.stringify(Array.from(skills));
+          }
+
+          bgSelected = function(element) {
+            bg_skills = new Array();
+            console.log("bgSelected");
+            var bgskills = <%-JSON.stringify(bgskills)%>; // This is not an error. VSCode just doesn't like it.
+            bgskills = bgskills.filter(bgskill => bgskill.bg_name === element.value);
+            for (skill of bgskills) {
+              bg_skills.push(skill.skill_name);
+            }
+            console.log(bg_skills);
+            var bgprofs = bg_skills.toString();
+            document.getElementById("proficiencylistbg").innerHTML = `Proficient in ${bgprofs}`;
+            calcSkills();
+          }
+
+          classSelected = function(element) {
+            class_skills = new Array();
+            console.log("classSelected");
+            var classskills = <%-JSON.stringify(classskills)%>; // This is not an error. VSCode just doesn't like it.
+            var classes = <%-JSON.stringify(classes)%>; // This is not an error. VSCode just doesn't like it.
+            var selectedclass = classes.find(c => c.class_name === element.value);
+            classskills = classskills.filter(skill => skill.class_name === element.value);
+            for (skill of classskills) {
+              class_skills.push(skill.skill_name);
+            }
+            class_num_skills = selectedclass.num_skills;
+            console.log(`Setting num_skills to: ${selectedclass.num_skills}`);
+            console.log(` num_skills : ${class_num_skills}`);
+            var checkboxes = '';
+            class_checkboxes = new Array();
+            class_checkbox_total = 0;
+            for (skill of class_skills) {
+              class_checkboxes.push(`class_skill[${skill}]`);
+              checkboxes += `<div><input style="margin-bottom: 0px; width: auto; display: inline-block;" type="checkbox" name="class_skill[${skill}]" id="class_skill[${skill}]" onchange="skillCheckedClass(this)" value="${skill}"><label for="class_skill[${skill}]">${skill}</label></div>`;
+            }
+            document.getElementById("proficiencylistclass").innerHTML = `Proficiencies: choose ${class_num_skills} skills from the following</br>`;
+            document.getElementById("proficiencyformclass").innerHTML = checkboxes;
+          }
+
+          skillCheckedClass = function(element) {
+            console.log("skillCheckedClass");
+            if (element.checked && class_checkbox_total >= class_num_skills) {
+              element.checked = false;
+            } else if (element.checked && class_checkbox_total < class_num_skills) {
+              class_checkbox_total++;
+              class_selected_skills.push(element.value);
+            } else {
+              console.log("unchecked");
+              class_checkbox_total--;
+              const index = class_selected_skills.indexOf(element.value);
+              if (index > -1) {
+                class_selected_skills.splice(index, 1);
+              }
+            }
+            console.log("cb total: " + class_checkbox_total);
+            console.log(`Selected skills: ${class_selected_skills.toString()}`);
+            calcSkills();
+          }
+
           raceSelected = function(element) {
+            console.log("raceSelected");
+
+            // Display race info and select attribute increases
             var racehtml = '';
-            console.log(element);
+            // console.log(element);
             var racelist = <%-JSON.stringify(races)%>; // This is not an error. VSCode just doesn't like it.
-            console.log(racelist);
+            // console.log(racelist);
             racehtml += `<p>${racelist.find(r => r.race_name === element.value).description}</p>`;
 
-            var racestats = <%-JSON.stringify(racestats)%>;
+            var racestats = <%-JSON.stringify(racestats)%>; // This is not an error. VSCode just doesn't like it.
             var racestats_vanilla = new Array();
             racestats = racestats.filter(rs => rs.race_name === element.value);
-            console.log(racestats);
+            // console.log(racestats);
             for (rs of racestats) {
               if (rs.stat === "AnyOther2") {
                 var options = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"];
@@ -61,6 +148,22 @@
             var arraystring = JSON.stringify(racestats_vanilla);
             racehtml += `<input type="hidden" name="race_stats" value='${arraystring}'>`;
             document.getElementById("racedescription").innerHTML = racehtml;
+
+            // Handle skill increases and select skill increases
+            race_skills = new Array();
+            var raceskills = <%-JSON.stringify(raceskills)%>;
+            raceskills = raceskills.filter(raceskill => raceskill.race_name === element.value);
+            for (skill of raceskills) {
+              if (skill.skill_name != "Any2") {
+                race_skills.push(skill.skill_name);
+              }
+            }
+            console.log(race_skills);
+            if (race_skills.length > 0) {
+              var raceprofs = race_skills.toString();
+              document.getElementById("proficiencylistrace").innerHTML = `Proficient in ${raceprofs}`;
+            }
+            calcSkills();
           }
         </script>
         
@@ -72,11 +175,12 @@
           racesoptions += `<option value="${r.race_name}">${r.race_name}</option>\n`;
         }
         %>
-        <label for="race_name">Race<span style="color: red;">*</span></label>
+        <label for="race_name" class="formlabel">Race<span style="color: red;">*</span></label>
         <select required id="race_name" name="race_name" onchange="raceSelected(this)">
           <%- racesoptions %>
         </select>
-        <span id="racedescription"></span>
+        <div><span id="racedescription"></span>
+        <span id="proficiencylistrace"></span></div>
 
         <%
         var classoptions = '';
@@ -85,10 +189,12 @@
           classoptions += `<option value="${c.class_name}">${c.class_name}</option>\n`;
         }
         %>
-        <label for="class_name">Class<span style="color: red;">*</span></label>
-        <select required id="class_name" name="class_name">
+        <label for="class_name" class="formlabel">Class<span style="color: red;">*</span></label>
+        <select required id="class_name" name="class_name" onchange="classSelected(this)">
           <%- classoptions %>
         </select>
+        <div><span id="proficiencylistclass"></span>
+        <span id="proficiencyformclass"></span></div>
 
         <%
         var backgroundoptions = '';
@@ -97,12 +203,13 @@
           backgroundoptions += `<option value="${b.bg_name}">${b.bg_name}</option>\n`;
         }
         %>
-        <label for="bg_name">Background<span style="color: red;">*</span></label>
-        <select required id="bg_name" name="bg_name">
+        <label for="bg_name" class="formlabel">Background<span style="color: red;">*</span></label>
+        <select required id="bg_name" name="bg_name" onchange="bgSelected(this)">
           <%- backgroundoptions %>
         </select>
+      <div><span id="proficiencylistbg"></span></div>
 
-        <label for="alignment">Alignment<span style="color: red;">*</span></label>
+        <label for="alignment" class="formlabel">Alignment<span style="color: red;">*</span></label>
         <select required id="alignment" name="alignment">
           <option disabled selected value> -- select an option -- </option>
           <option value="Lawful good">Lawful, good</option>
@@ -116,7 +223,7 @@
           <option value="Chaotic evil">Chaotic, evil</option>
         </select>
 
-        <label for="sex">Sex<span style="color: red;">*</span></label>
+        <label for="sex" class="formlabel">Sex<span style="color: red;">*</span></label>
         <select required id="sex" name="sex">
           <option disabled selected value> -- select an option -- </option>
           <option value="Male">Male</option>
@@ -125,13 +232,13 @@
           <option value="Other">Other</option>
         </select>
 
-        <label for="height">Height (inches)</label>
+        <label for="height" class="formlabel">Height (inches)</label>
         <input type="number" id="height" name="height">
 
-        <label for="weight">Weight (lbs)</label>
+        <label for="weight" class="formlabel">Weight (lbs)</label>
         <input type="number" id="weight" name="weight">
 
-        <label for="eyes">Eye Color</label>
+        <label for="eyes" class="formlabel">Eye Color</label>
         <select id="eyes" name="eyes">
           <option disabled selected value> -- select an option -- </option>
           <option value="Black">Black</option>
@@ -142,7 +249,7 @@
           <option value="Yellow">Yellow</option>
         </select>
 
-        <label for="skin">Skin Tone</label>
+        <label for="skin" class="formlabel">Skin Tone</label>
         <select id="skin" name="skin">
           <option disabled selected value> -- select an option -- </option>
           <option value="Light">Light</option>
@@ -161,23 +268,27 @@
           deityoptions += `<option value="${d.deity_id}">${d.deity_name} - ${d.title}</option>\n`;
         }
         %>
-        <label for="deity_name">Deity</label>
+        <label for="deity_name" class="formlabel">Deity</label>
         <select id="deity_name" name="deity_id">
           <%- deityoptions %>
         </select>
 
-        <label for="base_str">Strength</label>
+        <label for="base_str" class="formlabel">Strength</label>
         <input required style="width: 35px;" type="number" id="base_str" name="base_str" value=10 min=0 max=20>
-        <label for="base_str">Constitution</label>
+        <label for="base_con" class="formlabel">Constitution</label>
         <input required style="width: 35px;" type="number" id="base_con" name="base_con" value=10 min=0 max=20>
-        <label for="base_str">Dexterity</label>
+        <label for="base_dex" class="formlabel">Dexterity</label>
         <input required style="width: 35px;" type="number" id="base_dex" name="base_dex" value=10 min=0 max=20>
-        <label for="base_str">Intelligence</label>
+        <label for="base_int" class="formlabel">Intelligence</label>
         <input required style="width: 35px;" type="number" id="base_int" name="base_int" value=10 min=0 max=20>
-        <label for="base_str">Wisdom</label>
+        <label for="base_wis" class="formlabel">Wisdom</label>
         <input required style="width: 35px;" type="number" id="base_wis" name="base_wis" value=10 min=0 max=20>
-        <label for="base_str">Charisma</label>
+        <label for="base_cha" class="formlabel">Charisma</label>
         <input required style="width: 35px;" type="number" id="base_cha" name="base_cha" value=10 min=0 max=20>
+
+        <span id="proficiencylist"></span>
+
+        <input type="hidden" id="all_skills" name="skills">
 
         <input type="submit" value="Create">
 

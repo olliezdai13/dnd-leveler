@@ -123,7 +123,7 @@
  (
 	character_id INT NOT NULL,
     skill_name VARCHAR(255) NOT NULL,
-    PRIMARY KEY (character_id, skill_name),
+    PRIMARY KEY (character_id, skill_name, origin),
     origin ENUM('Race', 'Background', 'Class'),
     FOREIGN KEY (character_id) REFERENCES ddCharacter(character_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (skill_name) REFERENCES skill(skill_name) ON UPDATE RESTRICT ON DELETE RESTRICT

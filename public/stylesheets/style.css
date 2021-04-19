@@ -19,3 +19,12 @@ select {
   margin-bottom: 5px;
   width: 207px;
 }
+
+label {
+    margin-top:5px;
+    display:inline-block;
+}
+
+.formlabel {
+  font-weight: bold;
+}

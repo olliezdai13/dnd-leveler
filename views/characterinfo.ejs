@@ -13,6 +13,42 @@
        var wismod = Math.floor((parseInt(stats.wis) - 10) / 2);
        var chamod = Math.floor((parseInt(stats.cha) - 10) / 2);
        var ststr = (savingthrows.some(e => e.stat === "Strength"))? strmod + stats.proficiency_bonus : strmod;
+       var strbold1 = '';
+       var strbold2 = '';
+       if (savingthrows.some(e => e.stat === "Strength")) {
+         strbold1 = '<b>';
+         strbold2 = '</b>';
+       }
+       var chabold1 = '';
+       var chabold2 = '';
+       if (savingthrows.some(e => e.stat === "Charisma")) {
+          chabold1 = '<b>';
+          chabold2 = '</b>';
+       }
+       var conbold1 = '';
+       var conbold2 = '';
+       if (savingthrows.some(e => e.stat === "Constitution")) {
+          conbold1 = '<b>';
+          conbold2 = '</b>';
+       }
+       var dexbold1 = '';
+       var dexbold2 = '';
+       if (savingthrows.some(e => e.stat === "Dexterity")) {
+         dexbold1 = '<b>';
+         dexbold2 = '</b>';
+       }
+       var intbold1 = '';
+       var intbold2 = '';
+       if (savingthrows.some(e => e.stat === "Intelligence")) {
+        intbold1 = '<b>';
+        intbold2 = '</b>';
+       }
+       var wisbold1 = '';
+       var wisbold2 = '';
+       if (savingthrows.some(e => e.stat === "Wisdom")) {
+         wisbold1 = '<b>';
+         wisbold2 = '</b>';
+       }
        var stdex = (savingthrows.some(e => e.stat === "Dexterity"))? dexmod + stats.proficiency_bonus : dexmod;
        var stcon = (savingthrows.some(e => e.stat === "Constitution"))? conmod + stats.proficiency_bonus : conmod;
        var stint = (savingthrows.some(e => e.stat === "Intelligence"))? intmod + stats.proficiency_bonus : intmod;
@@ -36,13 +72,12 @@
     <p><b>Charisma:</b> <%- stats.cha %> (<%- Math.floor((parseInt(stats.cha) - 10) / 2)  %>)</p>
 
     <h2>Saving Throws</h2>
-    <p>Strength: <%- ststr %></p>
-    <p>Dexterity: <%- stdex %></p>
-    <p>Constitution: <%- stcon %></p>
-    <p>Intelligence: <%- stint %></p>
-    <p>Wisdom: <%- stwis %></p>
-    <p>Charisma: <%- stcha %></p>
-    <p>TODO (Bold stats w/ proficiencies)</p>
+    <p><%- strbold1 %>Strength: <%- ststr %><%- strbold2 %></p>
+    <p><%- dexbold1 %>Dexterity: <%- stdex %><%- dexbold2 %></p>
+    <p><%- conbold1 %>Constitution: <%- stcon %><%- conbold2 %></p>
+    <p><%- intbold1 %>Intelligence: <%- stint %><%- intbold2 %></p>
+    <p><%- wisbold1 %>Wisdom: <%- stwis %><%- wisbold2 %></p>
+    <p><%- chabold1 %>Charisma: <%- stcha %><%- chabold2 %></p>
     
 
     <h2>Skills</h2>
@@ -72,14 +107,19 @@
             break;
         } %>
 
-        <% var score = (skills.includes(allskills[i]))? mod + stats.proficiency_bonus : mod; %>
-
-        <p> <%- allskills[i].skill_name %>: <%- score %> </p>
+        <% var score = (skills.some(e => e.skill_name === allskills[i].skill_name))? mod + stats.proficiency_bonus : mod; 
+          var bold1 = '';
+          var bold2 = '';
+          if (skills.some(e => e.skill_name === allskills[i].skill_name)) {
+            bold1 = '<b>'; 
+            bold2 = '</b>'; 
+          }
+          %>
+        <p> <%- bold1 %><%- allskills[i].skill_name %>: <%- score %><%- bold2 %> </p>
 
       <% } %>
     <% } %>
     
-    <p>TODO (Bold skills w/ proficiencies)</p>
 
     <h2>Other Stats</h2>
     <p><b>Speed:</b> <%- character.speed %></p>
