@@ -55,6 +55,8 @@
           bgSelected = function(element) {
             bg_skills = new Array();
             console.log("bgSelected");
+            var bglist = <%-JSON.stringify(backgrounds)%>;
+            var bghtml = `<p>${bglist.find(b => b.bg_name === element.value).description}</p>`;
             var bgskills = <%-JSON.stringify(bgskills)%>; // This is not an error. VSCode just doesn't like it.
             bgskills = bgskills.filter(bgskill => bgskill.bg_name === element.value);
             for (skill of bgskills) {
@@ -63,6 +65,7 @@
             console.log(bg_skills);
             var bgprofs = bg_skills.toString();
             document.getElementById("proficiencylistbg").innerHTML = `Proficient in ${bgprofs}`;
+            document.getElementById("bgdescription").innerHTML = bghtml;
             calcSkills();
           }
 
@@ -183,7 +186,7 @@
         <select required id="race_name" name="race_name" onchange="raceSelected(this)">
           <%- racesoptions %>
         </select>
-        <div><span id="racedescription"></span>
+        <div style="max-width: 800px;"><span id="racedescription"></span>
         <span id="proficiencylistrace"></span></div>
 
         <%
@@ -197,7 +200,7 @@
         <select required id="class_name" name="class_name" onchange="classSelected(this)">
           <%- classoptions %>
         </select>
-        <div>
+        <div style="max-width: 800px;">
           <span id="classdescription"></span>
           <span id="proficiencylistclass"></span>
           <span id="proficiencyformclass"></span></div>
@@ -213,7 +216,8 @@
         <select required id="bg_name" name="bg_name" onchange="bgSelected(this)">
           <%- backgroundoptions %>
         </select>
-      <div><span id="proficiencylistbg"></span></div>
+      <div style="max-width: 800px;"><span id="bgdescription"></span>
+        <span id="proficiencylistbg"></span></div>
 
         <label for="alignment" class="formlabel">Alignment<span style="color: red;">*</span></label>
         <select required id="alignment" name="alignment">
