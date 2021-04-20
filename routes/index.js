@@ -134,10 +134,12 @@ router.get('/character/:cid/edit', async function(req, res) {
     // console.log(rows[0]);
     const statrows = await db.query(`CALL calc_character_stats(?)`, [cid]).catch( error => { console.error(error) });
     // console.log(statrows[0][0]);
+    const deityrows = await db.query("SELECT * FROM deity;").catch( error => { console.error(error) });
     res.render('characteredit', 
     { 
       "character": rows[0],
       "stats": statrows[0][0],
+      "deities": deityrows,
       title: rows[0].character_name 
     });
   } catch (err) {
@@ -293,5 +295,37 @@ router.post('/character/:cid/delete', async function(req, res) {
     res.status(500).json({message: err.message});
   }
 });
+
+router.post('/character/:cid/edit', async function(req, res) {
+  try {
+    var echar = req.body;
+
+    // validate form input
+    if (typeof echar.height === 'undefined' || echar.height === '') {
+      echar.height= null;
+    }
+    if (typeof echar.weight === 'undefined' || echar.weight === '') {
+      echar.weight = null;
+    }
+    if (typeof echar.eyes === 'undefined' || echar.eyes === '') {
+      echar.eyes = null;
+    }
+    if (typeof echar.skin === 'undefined' || echar.skin === '') {
+      echar.skin = null;
+    }
+    if (typeof echar.deity_id === 'undefined' || echar.deity_id === '') {
+      echar.deity_id = null;
+    }
+    
+    const edit_response = await db.query("UPDATE ddCharacter SET character_name = ?, alignment = ?, sex = ?, height = ?, weight = ?, eyes = ?, skin = ?, deity_id = ? WHERE character_id = ?;",
+    [echar.character_name, echar.alignment, echar.sex, echar.height, echar.weight, echar.eyes, echar.skin, echar.deity_id, echar.character_id]);
+    
+    console.log(echar);
+    res.redirect(`/character/${echar.character_id}`);
+  } catch (err) {
+    res.status(500).json({message: err.message});
+  }
+});
+//req.params.cid
 
 module.exports = router;

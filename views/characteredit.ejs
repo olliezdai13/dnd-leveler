@@ -4,13 +4,119 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
+  <h1><%= "Edit " + title %></h1>
   <body>
-      TODO: Here the character info should be displayed as an editable form.
-      Hitting a save button should update all the character's info in the database, and return to the "../character/{id}" path. 
+    <% 
+       var returnpath = "/character/" + character.character_id; 
+       var currentpath = "/character/" + character.character_id + "/edit";
 
-      <form method="post" action="/testform" novalidate>
-        <input type="text" name="field1" value="field1">
-        <input type="submit" value="save">
+       var lgselect = (character.alignment === "Lawful good")? "selected" : "";
+       var lnselect = (character.alignment === "Lawful neutral")? "selected" : "";
+       var leselect = (character.alignment === "Lawful evil")? "selected" : "";
+       var ngselect = (character.alignment === "Neutral good")? "selected" : "";
+       var nselect = (character.alignment === "Neutral")? "selected" : "";
+       var neselect = (character.alignment === "Neutral evil")? "selected" : "";
+       var cgselect = (character.alignment === "Chaotic good")? "selected" : "";
+       var cnselect = (character.alignment === "Chaotic neutral")? "selected" : "";
+       var ceselect = (character.alignment === "Chaotic evil")? "selected" : "";
+
+       var sexmale = (character.sex === "Male")? "selected" : "";
+       var sexfemale = (character.sex === "Female")? "selected" : "";
+       var sexnone = (character.sex === "None")? "selected" : "";
+       var sexother = (character.sex === "Other")? "selected" : "";
+
+       var eyesnull = (character.eyes === null)? "selected" : "";
+       var eyesbla = (character.eyes === "Black")? "selected" : "";
+       var eyesblu = (character.eyes === "Blue")? "selected" : "";
+       var eyesbro = (character.eyes === "Brown")? "selected" : "";
+       var eyesgre = (character.eyes === "Green")? "selected" : "";
+       var eyesred = (character.eyes === "Red")? "selected" : "";
+       var eyesyel = (character.eyes === "Yellow")? "selected" : "";
+
+       var skinnull = (character.skin === null)? "selected" : "";
+       var skinlig = (character.skin === "Light")? "selected" : "";
+       var skinbro = (character.skin === "Brown")? "selected" : "";
+       var skinbla = (character.skin === "Black")? "selected" : "";
+       var skinblu = (character.skin === "Blue")? "selected" : "";
+       var skingre = (character.skin === "Green")? "selected" : "";
+       var skinred = (character.skin === "Red")? "selected" : "";
+       var skinyel = (character.skin === "Yellow")? "selected" : "";
+
+       var deitynull = (character.deity_id === null)? "selected" : "";
+      %>
+    
+      <label for="character_name" class="formlabel">Name</label>
+      <form method="post" action=<%= currentpath %>>
+        <input required type="text" name="character_name" value=<%= character.character_name %>>
+
+        <label for="alignment" class="formlabel">Alignment<span style="color: red;">*</span></label>
+        <select required id="alignment" name="alignment">
+          <option disabled value> -- select an option -- </option>
+          <option <%= lgselect %> value="Lawful good">Lawful, good</option>
+          <option <%= lnselect %> value="Lawful neutral">Lawful, neutral</option>
+          <option <%= leselect %> value="Lawful evil">Lawful, evil</option>
+          <option <%= ngselect %> value="Neutral good">Neutral, good</option>
+          <option <%= nselect %> value="Neutral">True neutral</option>
+          <option <%= neselect %> value="Neutral evil">Neutral, evil</option>
+          <option <%= cgselect %> value="Chaotic good">Chaotic, good</option>
+          <option <%= cnselect %> value="Chaotic neutral">Chaotic, neutral</option>
+          <option <%= ceselect %> value="Chaotic evil">Chaotic, evil</option>
+        </select>
+
+        <label for="sex" class="formlabel">Sex<span style="color: red;">*</span></label>
+        <select required id="sex" name="sex">
+          <option disabled value> -- select an option -- </option>
+          <option <%= sexmale %> value="Male">Male</option>
+          <option <%= sexfemale %> value="Female">Female</option>
+          <option <%= sexnone %> value="None">None</option>
+          <option <%= sexother %> value="Other">Other</option>
+        </select>
+
+        <label for="height" class="formlabel">Height (inches)</label>
+        <input type="number" id="height" name="height" value=<%= character.height %>>
+
+        <label for="weight" class="formlabel">Weight (lbs)</label>
+        <input type="number" id="weight" name="weight" value=<%= character.weight %>>
+
+        <label for="eyes" class="formlabel">Eye Color</label>
+        <select id="eyes" name="eyes">
+          <option disabled  <%= eyesnull %> value> -- select an option -- </option>
+          <option <%= eyesbla %> value="Black">Black</option>
+          <option <%= eyesblu %> value="Blue">Blue</option>
+          <option <%= eyesbro %> value="Brown">Brown</option>
+          <option <%= eyesgre %> value="Green">Green</option>
+          <option <%= eyesred %> value="Red">Red</option>
+          <option <%= eyesyel %> value="Yellow">Yellow</option>
+        </select>
+
+        <label for="skin" class="formlabel">Skin Tone</label>
+        <select id="skin" name="skin">
+          <option disabled <%= skinnull %> value> -- select an option -- </option>
+          <option <%= skinlig %> value="Light">Light</option>
+          <option <%= skinbro %> value="Brown">Brown</option>
+          <option <%= skinbla %> value="Black">Yellow</option>
+          <option <%= skinblu %> value="Blue">Blue</option>
+          <option <%= skingre %> value="Green">Green</option>
+          <option <%= skinred %> value="Red">Red</option>
+          <option <%= skinyel %> value="Yellow">Yellow</option>
+        </select>
+
+        <%
+        var deityoptions = '';
+        deityoptions += `<option "${deitynull}" value> -- select an option -- </option>`;
+        for (d of deities) {
+          var deitysel = (character.deity_id === d.deity_id)? "selected" : "";
+          deityoptions += `<option ${deitysel} value="${d.deity_id}">${d.deity_name} - ${d.title}</option>\n`;
+        }
+          %>
+        <label for="deity_name" class="formlabel">Deity</label>
+        <select id="deity_name" name="deity_id">
+          <%- deityoptions %>
+        </select>
+
+        <input type="hidden" name="character_id" value=<%= character.character_id%>>
+
+        <input type="submit" value="Save">
       </form>
 
   </body>
