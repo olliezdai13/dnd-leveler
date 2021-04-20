@@ -21,8 +21,14 @@
               optionshtml1 += `<option value=${attr}>${attr}</option>`;
             }
             var optionshtml2 = '';
+            var options2index = 0;
             for (attr of c.options2) {
-              optionshtml2 += `<option value=${attr}>${attr}</option>`;
+              if (options2index === 1) {
+                optionshtml2 += `<option selected value=${attr}>${attr}</option>`;
+              } else {
+                optionshtml2 += `<option value=${attr}>${attr}</option>`;
+              }
+              options2index++;
             }
             button += 
             `<div id=${c.character_id}>
