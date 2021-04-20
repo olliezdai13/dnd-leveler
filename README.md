@@ -3,7 +3,7 @@ CS3200 Final Project: A tool that helps level up your D&amp;D characters.
 
 How to set up database:
 1. You need your MySQL service running
-2. Using a client like MySQL Workbench, open daiocostichk_finalproject.sql
+2. Using a client like MySQL Workbench, open daiocostichk_finalproject.sql, found inside of the project folder. This contains all the SQL necessary to build our database from scratch. Alternatively, you can run our database dump file that should be included in the project submission. 
 3. Run the entire script. This generates a new database called "ddcharactermanager" and seeds all the initial data, including 1 sample character.
 
 How to set up application:
