@@ -69,6 +69,8 @@
           classSelected = function(element) {
             class_skills = new Array();
             console.log("classSelected");
+            var classlist = <%-JSON.stringify(classes)%>;
+            var classhtml = `<p>${classlist.find(c => c.class_name === element.value).description}</p>`;
             var classskills = <%-JSON.stringify(classskills)%>; // This is not an error. VSCode just doesn't like it.
             var classes = <%-JSON.stringify(classes)%>; // This is not an error. VSCode just doesn't like it.
             var selectedclass = classes.find(c => c.class_name === element.value);
@@ -88,6 +90,7 @@
             }
             document.getElementById("proficiencylistclass").innerHTML = `Proficiencies: choose ${class_num_skills} skills from the following</br>`;
             document.getElementById("proficiencyformclass").innerHTML = checkboxes;
+            document.getElementById("classdescription").innerHTML = classhtml;
           }
 
           skillCheckedClass = function(element) {
@@ -194,8 +197,10 @@
         <select required id="class_name" name="class_name" onchange="classSelected(this)">
           <%- classoptions %>
         </select>
-        <div><span id="proficiencylistclass"></span>
-        <span id="proficiencyformclass"></span></div>
+        <div>
+          <span id="classdescription"></span>
+          <span id="proficiencylistclass"></span>
+          <span id="proficiencyformclass"></span></div>
 
         <%
         var backgroundoptions = '';
