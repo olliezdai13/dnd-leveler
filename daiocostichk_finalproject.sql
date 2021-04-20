@@ -1,18 +1,8 @@
- /* Logical Design of D&D Character Manager
- * Draft 2
- * Oliver Dai and Kenneth Costich
- * CS3200 Final Project
+ /* Logical Design of D&D Character Manager/Leveling Tool
+ *  Oliver Dai and Kenneth Costich
+ *  Professor Kathleen Durant
+ *  CS3200 Final Project
  */
- 
- /* COMMENTS WHILE DERIVING LOGICAL DESIGN FROM CONCEPTUAL DESIGN
-  * - check comment above background table
-  * - check comment above backgroundToSkill table
-  * - LD has been made with these comments in mind, rather than according to CD (CD needs editing):
-  * 	- CD says 1 character has 1 background...should be 0..* characters have 1 background?
-  * 	- similarly, CD says 1 character has 1 class
-  *
-  * -have yet to add all relationships or the StatChange entity
-  */
  
  DROP DATABASE IF EXISTS ddCharacterManager;
  
@@ -61,7 +51,6 @@
     FOREIGN KEY (class_name) REFERENCES class(class_name) ON UPDATE RESTRICT ON DELETE RESTRICT
  );
  
- -- is there any reason to have the PK as an INT? class and race has PK as VARCHAR representing their names
  CREATE TABLE background 
  (
 	bg_name VARCHAR(255) PRIMARY KEY,
