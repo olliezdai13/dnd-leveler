@@ -50,7 +50,7 @@
 
       <label for="character_name" class="formlabel">Name</label>
       <form method="post" action=<%= currentpath %>>
-        <input required type="text" name="character_name" value=<%= character.character_name %>>
+        <input required type="text" name="character_name" value="<%= character.character_name %>"">
 
         <label for="alignment" class="formlabel">Alignment<span style="color: red;">*</span></label>
         <select required id="alignment" name="alignment">
