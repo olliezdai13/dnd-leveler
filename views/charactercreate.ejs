@@ -5,7 +5,10 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-      <h1><%= title %></h1>
+      <% var backlink = `/`; %>
+      <h1><%= title %>
+          <a href=<%= backlink %>><button>Cancel</button></a> 
+      </h1>
 
       <form method="post" action="/charactercreate">
         <label for="character_name" class="formlabel">Name<span style="color: red;">*</span></label>

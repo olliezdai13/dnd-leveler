@@ -111,6 +111,8 @@ router.get('/character/:cid', async function(req, res) {
     // console.log(allskills);
     const skillrows = await db.query(`SELECT skill_name, stat FROM characterToSkill JOIN skill USING(skill_name) WHERE character_id = ?;`, [cid]).catch( error => { console.error(error) });
     // console.log(skillrows);
+    const thisdeityrow = await db.query(`SELECT deity_name, title FROM ddcharacter JOIN deity USING(deity_id) WHERE character_id = ?;`, [cid]).catch( error => { console.error(error) });
+    console.log(thisdeityrow[0]);
     res.render('characterinfo', 
     { 
       "character": rows[0],
@@ -119,6 +121,7 @@ router.get('/character/:cid', async function(req, res) {
       "hp_stats": hprows[0][0],
       "allskills": allskills,
       "skills": skillrows,
+      "thisdeity": thisdeityrow[0],
       title: rows[0].character_name 
     });
   } catch (err) {

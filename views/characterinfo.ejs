@@ -7,6 +7,7 @@
   <body>
     <% var link = `/character/${character.character_id}/edit`;
        var dellink = `/character/${character.character_id}/delete`;
+       var backlink = `/`;
        var strmod = Math.floor((parseInt(stats.str) - 10) / 2);
        var dexmod = Math.floor((parseInt(stats.dex) - 10) / 2);
        var conmod = Math.floor((parseInt(stats.con) - 10) / 2);
@@ -14,6 +15,7 @@
        var wismod = Math.floor((parseInt(stats.wis) - 10) / 2);
        var chamod = Math.floor((parseInt(stats.cha) - 10) / 2);
        var ststr = (savingthrows.some(e => e.stat === "Strength"))? strmod + stats.proficiency_bonus : strmod;
+       var deitydisplay = (thisdeity != null)? thisdeity.deity_name + " - " + thisdeity.title : "None";
        var strbold1 = '';
        var strbold2 = '';
        if (savingthrows.some(e => e.stat === "Strength")) {
@@ -55,7 +57,9 @@
        var stint = (savingthrows.some(e => e.stat === "Intelligence"))? intmod + stats.proficiency_bonus : intmod;
        var stwis = (savingthrows.some(e => e.stat === "Wisdom"))? wismod + stats.proficiency_bonus : wismod;
        var stcha = (savingthrows.some(e => e.stat === "Charisma"))? chamod + stats.proficiency_bonus : chamod; %>
-    <h1><%= title %> 
+    <h1>
+      <%= title %> 
+      <a href=<%= backlink %>><button>Home</button></a> 
       <a href=<%= link %>><button>Edit</button></a> 
       <form style="display: inline-block;" method="post" action=<%= dellink %>>
         <input style="width: auto; display: inline-block;" value="Delete" type="submit">
@@ -68,6 +72,13 @@
     <p><b>Alignment:</b> <%- character.alignment %></p>
     <p><b>HP Max:</b> <%- hp_stats.hp_max %></p>
     <p><b>Hit Dice:</b> <%- hp_stats.num_hit_dice %>d<%- hp_stats.hit_dice %></p>
+    <p><b>Sex:</b> <%- character.sex %></p>
+    <p><b>Height:</b> <%- character.height %></p>
+    <p><b>Weight:</b> <%- character.weight %></p>
+    <p><b>Eye Color:</b> <%- character.eyes %></p>
+    <p><b>Skin Tone:</b> <%- character.skin %></p>
+
+    <p><b>Deity:</b> <%- deitydisplay %></p>
 
     <h2>Attributes</h2>
     <p><b>Strength:</b> <%- stats.str %> (<%- Math.floor((parseInt(stats.str) - 10) / 2)  %>)</p>

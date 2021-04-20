@@ -4,7 +4,7 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
-  <h1><%= "Edit " + title %></h1>
+  
   <body>
     <% 
        var returnpath = "/character/" + character.character_id; 
@@ -45,6 +45,9 @@
        var deitynull = (character.deity_id === null)? "selected" : "";
       %>
     
+      <h1><%= "Edit " + title %>
+        <a href=<%= returnpath %>><button>Cancel</button></a> </h1>
+
       <label for="character_name" class="formlabel">Name</label>
       <form method="post" action=<%= currentpath %>>
         <input required type="text" name="character_name" value=<%= character.character_name %>>
