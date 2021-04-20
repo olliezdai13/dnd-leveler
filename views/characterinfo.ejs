@@ -15,6 +15,10 @@
        var wismod = Math.floor((parseInt(stats.wis) - 10) / 2);
        var chamod = Math.floor((parseInt(stats.cha) - 10) / 2);
        var ststr = (savingthrows.some(e => e.stat === "Strength"))? strmod + stats.proficiency_bonus : strmod;
+       var heightdisplay = (character.height != null)? character.height : "Not specified";
+       var weightdisplay = (character.weight != null)? character.weight : "Not specified";
+       var eyesdisplay = (character.eyes != null)? character.eyes : "Not specified";
+       var skindisplay = (character.skin != null)? character.skin : "Not specified";
        var deitydisplay = (thisdeity != null)? thisdeity.deity_name + " - " + thisdeity.title : "None";
        var strbold1 = '';
        var strbold2 = '';
@@ -74,11 +78,10 @@
     <p><b>HP Max:</b> <%- hp_stats.hp_max %></p>
     <p><b>Hit Dice:</b> <%- hp_stats.num_hit_dice %>d<%- hp_stats.hit_dice %></p>
     <p><b>Sex:</b> <%- character.sex %></p>
-    <p><b>Height:</b> <%- character.height %></p>
-    <p><b>Weight:</b> <%- character.weight %></p>
-    <p><b>Eye Color:</b> <%- character.eyes %></p>
-    <p><b>Skin Tone:</b> <%- character.skin %></p>
-
+    <p><b>Height:</b> <%- heightdisplay %></p>
+    <p><b>Weight:</b> <%- weightdisplay %></p>
+    <p><b>Eye Color:</b> <%- eyesdisplay %></p>
+    <p><b>Skin Tone:</b> <%- skindisplay %></p>
     <p><b>Deity:</b> <%- deitydisplay %></p>
 
     <h2>Attributes</h2>
