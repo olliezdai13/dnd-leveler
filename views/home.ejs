@@ -25,7 +25,7 @@
               optionshtml2 += `<option value=${attr}>${attr}</option>`;
             }
             button += 
-            `<div id=${c.character_id} style="display: inline-block;">
+            `<div id=${c.character_id}>
               <form method="post" action="/levelup" novalidate>
                 <select name="attribute1" style="display:inline-block;">
                   ${optionshtml1}
@@ -33,6 +33,7 @@
                 <select name="attribute2" style="display:inline-block;">
                   ${optionshtml2}
                 </select>
+                <label>Ability Score Increase - Select two attributes to increase by 1.</label>
                 <input type="submit" value="Level Up" style="display:inline-block;">
                 <input type="hidden" name="cid" value=${c.character_id}>
               </form>
